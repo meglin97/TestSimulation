@@ -86,7 +86,7 @@ void decrypt(char str[], char str_out[], int shift)
     }
 }
 
-/*fonction control CSC*/
+
 void CSC_control(char danger_info[20], char frein_info[20], char msg_danger_in[20], SysFrein sf, CSC csc)
 {
     if (strcmp(danger_info, "danger") || strcmp(msg_danger_in, "danger"))
