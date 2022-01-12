@@ -1,6 +1,7 @@
 #include <CUnit.h>
 #include <Artefacts.h>
 
+/* cryptage */
 void encrypt(char str[], char str_out[])
 {
     int shift = 5;
