@@ -51,8 +51,8 @@ void decrypt(char str[], char str_out[], int shift) {
 }
 
 /*
- * reÃ§oit les informations de radar et du systÃ¨me de frein
- * envoie un ordre au systÃ¨me de frein et les informations de danger au vÃ©hicule alentour
+ * reçoit les informations de radar et du système de frein
+ * envoie un ordre au système de frein et les informations de danger au véhicule alentour
  */
 void CSC_control(char danger_info[20], char frein_info[20],
 		char msg_danger_in[20], SysFrein sf, CSC csc) {
@@ -66,13 +66,13 @@ void CSC_control(char danger_info[20], char frein_info[20],
 }
 
 /*
- *  reÃ§oit message venant d'autre vÃ©hicules et
- *  envoie les messages de danger aux autres vÃ©hicules
+ *  reçoit message venant d'autre véhicules et
+ *  envoie les messages de danger aux autres véhicules
  */
 void CU(CSC csc, MSG msg_danger_out, MSG msg_danger_in) {
 	msg_danger_out.shift = 5;
 	if (msg_danger_in.msg != NULL) {
-		time(&msg_danger_in.receive); // indique l'heure de la rÃ©ception du message par CSC
+		time(&msg_danger_in.receive); // indique l'heure de la réception du message par CSC
 		decrypt(msg_danger_in.msg, csc.order_out, msg_danger_in.shift);
 	}
 	if (msg_danger_out.msg != NULL) {
