@@ -1,10 +1,8 @@
 #include "Artefacts.h"
 
-CSC csc;
-SysFrein sf;
-char* encrypt(char str[]) {
+char* encrypt(char *str) {
 	int shift = 5;
-	char *str_out;
+	char *str_out = malloc(sizeof(str));
 	char ch;
 	for (int i = 0; str[i] != '\0'; ++i) {
 		ch = str[i];
@@ -23,12 +21,11 @@ char* encrypt(char str[]) {
 		}
 	}
 	return str_out;
-
 }
 
-char* decrypt(char str[], int shift) {
+char* decrypt(char *str, int shift) {
 	char ch;
-	char *str_out;
+	char *str_out = malloc(sizeof(str));
 	for (int i = 0; str[i] != '\0'; ++i) {
 		ch = str[i];
 		if (ch >= 'a' && ch <= 'z') {
@@ -51,38 +48,46 @@ char* decrypt(char str[], int shift) {
 /*
  * reçoit les informations de radar et du système de frein
  * envoie un ordre au système de frein et les informations de danger au véhicule alentour
+ * si danger alors freinager urgent, si obstacle alors freiner sinon avancer
+ *
  */
-void CSC_control(char *danger_info, char *msg_danger_in) {
-	if (strcmp(danger_info, "danger") || strcmp(msg_danger_in, "danger")) {
-		sf.order = FREINAGE_URGENT;
-	} else if (strcmp(danger_info, "obstacle")) {
-		sf.order = FREINER;
+void CSC_control(MSG danger_info, MSG msg_danger_in, CSC csc) {
+	if (strcmp(danger_info.msg, "danger")
+			|| strcmp(msg_danger_in.msg, "danger")) {
+		strcpy(csc.order_out, "FREINAGE_URGENT");
+	} else if (strcmp(danger_info.msg, "obstacle")
+			|| strcmp(msg_danger_in.msg, "obstacle")) {
+		strcpy(csc.order_out, "FREINER");
 	} else {
-		sf.order = AVANCER;
+		strcpy(csc.order_out, "AVANCER");
 	}
 }
 
 /*
  *  reçoit message venant d'autre véhicules et
  *  envoie les messages de danger aux autres véhicules
+ *
  */
-void CU(MSG msg_danger_out, MSG msg_danger_in) {
+void CU(MSG msg_danger_out, MSG msg_danger_in, CSC csc) {
 	msg_danger_out.shift = 5;
 	if (msg_danger_in.msg != NULL) {
 		time(&msg_danger_in.receive); // indique l'heure de la réception du message par CSC
-		csc.order_out = decrypt(msg_danger_in.msg, msg_danger_in.shift);
+		strcpy(csc.order_out, decrypt(msg_danger_in.msg, msg_danger_in.shift));
 	}
 	if (msg_danger_out.msg != NULL) {
 		time(&msg_danger_out.send); // indique l'heure de l'envoie du message par CSC
-		msg_danger_out.msg = encrypt(csc.msg_detect_in);
+		strcpy(msg_danger_out.msg, encrypt(csc.msg_detect_in));
 	}
 }
 
-enum Action frein(char *danger_info, char *msg_danger_in) {
-	CSC_control(dangerinfo, msg_danger_in, sf);
-	return sf.order;
+char* SystemFrein_control(MSG danger_info, MSG msg_danger_in, CSC csc,
+		SysFrein sf) {
+	char *out = malloc(sizeof(csc.order_out));
+	CSC_control(danger_info, msg_danger_in, csc);
+	strcpy(out, csc.order_out);
+	return out;
 }
 
 int msg_size(char *msg_info) {
-	return sizeof(msg_info) / sizeof(msg_info[0]);
+	return (sizeof(&msg_info) / sizeof(msg_info[0]));
 }

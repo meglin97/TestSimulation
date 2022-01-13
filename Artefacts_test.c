@@ -1,5 +1,7 @@
+#include "CUnit.h"
 #include "Artefacts.h"
-
+#include "Basic.h"
+#include <stdio.h>  // for printf
 int init_suite(void) {
 	return 0;
 }
@@ -24,7 +26,7 @@ int main(void) {
 		return CU_get_error();
 	}
 
-	if ((NULL == CU_add_test(pSuite, "encrypt_test_1"))) {
+	if ((NULL == CU_add_test(pSuite, "encrypt_test_1", encrypt_test_1))) {
 		CU_cleanup_registry();
 		return CU_get_error();
 	}
@@ -32,7 +34,17 @@ int main(void) {
 	CU_basic_set_mode(CU_BRM_VERBOSE);
 	CU_basic_run_tests();
 	printf("\n");
-	CU_automated_run_tests();
+	CU_basic_show_failures(CU_get_failure_list());
+	printf("\n\n");
+	/*
+	 // Run all tests using the automated interface
+	 CU_automated_run_tests();
+	 CU_list_tests_to_file();
+
+	 // Run all tests using the console interface
+	 CU_console_run_tests();
+	 */
+	/* Clean up registry and return */
 	CU_cleanup_registry();
 	return CU_get_error();
 }
