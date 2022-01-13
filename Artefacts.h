@@ -30,8 +30,8 @@ typedef struct CSC {
 	char order_out[20];
 } CSC;
 
-char* encrypt(char *str);
-char* decrypt(char *str, int shift);
+char* encrypt(char str[]);
+char* decrypt(char str[], int shift);
 
 void CSC_control(MSG danger_info, MSG msg_danger_in, CSC csc);
 void CU(MSG msg_danger_out, MSG msg_danger_in, CSC csc);

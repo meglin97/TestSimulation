@@ -10,7 +10,7 @@ int clean_suite(void) {
 }
 
 void encrypt_test_1(void) {
-	CU_ASSERT_EQUAL(encrypt("test"), "yjxy");
+	CU_ASSERT_STRING_EQUAL(encrypt("test"), "yjxy");
 }
 
 int main(void) {
