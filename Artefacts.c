@@ -2,8 +2,9 @@
 
 CSC csc;
 SysFrein sf;
-void encrypt(char str[], char str_out[]) {
+char* encrypt(char str[]) {
 	int shift = 5;
+	char *str_out;
 	char ch;
 	for (int i = 0; str[i] != '\0'; ++i) {
 		ch = str[i];
@@ -21,11 +22,13 @@ void encrypt(char str[], char str_out[]) {
 			str_out[i] = ch;
 		}
 	}
+	return str_out;
 
 }
 
-void decrypt(char str[], char str_out[], int shift) {
+char* decrypt(char str[], int shift) {
 	char ch;
+	char *str_out;
 	for (int i = 0; str[i] != '\0'; ++i) {
 		ch = str[i];
 		if (ch >= 'a' && ch <= 'z') {
@@ -42,6 +45,7 @@ void decrypt(char str[], char str_out[], int shift) {
 			str_out[i] = ch;
 		}
 	}
+	return str_out;
 }
 
 /*
@@ -66,11 +70,11 @@ void CU(MSG msg_danger_out, MSG msg_danger_in) {
 	msg_danger_out.shift = 5;
 	if (msg_danger_in.msg != NULL) {
 		time(&msg_danger_in.receive); // indique l'heure de la réception du message par CSC
-		decrypt(msg_danger_in.msg, csc.order_out, msg_danger_in.shift);
+		csc.order_out = decrypt(msg_danger_in.msg, msg_danger_in.shift);
 	}
 	if (msg_danger_out.msg != NULL) {
 		time(&msg_danger_out.send); // indique l'heure de l'envoie du message par CSC
-		encrypt(csc.msg_detect_in, msg_danger_out.msg);
+		msg_danger_out.msg = encrypt(csc.msg_detect_in);
 	}
 }
 
