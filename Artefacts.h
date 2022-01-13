@@ -1,9 +1,18 @@
+#include <CUnit.h>
 enum Action {
 	FREINAGE_URGENT, FREINER, AVANCER
 
 };
+
+typedef struct Position {
+	float latitude;
+	float longitude;
+} Position;
+
 typedef struct SysFrein {
 	char frein[10];
+	Position pos;
+	float vitesse;
 	enum Action order;
 } SysFrein;
 
@@ -23,7 +32,8 @@ typedef struct CSC {
 
 void encrypt(char str[], char str_out[]);
 void decrypt(char str[], char str_out[], int shift);
-void CSC_control(char danger_info[20], char frein_info[20],
-		char msg_danger_in[20], SysFrein sf, CSC csc);
-void CU(CSC csc, MSG msg_danger_out, MSG msg_danger_in);
+void CSC_control(char *danger_info, char *msg_danger_in);
+void CU(MSG msg_danger_out, MSG msg_danger_in);
+enum Action frein(char *danger_info, char *msg_danger_in);
+int msg_size(char *msg_info);
 

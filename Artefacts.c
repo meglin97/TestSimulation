@@ -1,27 +1,21 @@
-#include <CUnit.h>
-#include <Artefacts.h>
+#include "Artefacts.h"
 
-void encrypt(char str[], char str_out[])
-{
+CSC csc;
+SysFrein sf;
+void encrypt(char str[], char str_out[]) {
 	int shift = 5;
 	char ch;
-	for (int i = 0; str[i] != '\0'; ++i)
-	{
+	for (int i = 0; str[i] != '\0'; ++i) {
 		ch = str[i];
-		if (ch >= 'a' && ch <= 'z')
-		{
+		if (ch >= 'a' && ch <= 'z') {
 			ch = ch + shift;
-			if (ch > 'z')
-			{
+			if (ch > 'z') {
 				ch = ch - 'z' + 'a' - 1;
 			}
 			str_out[i] = ch;
-		}
-		else if (ch >= 'A' && ch <= 'Z')
-		{
+		} else if (ch >= 'A' && ch <= 'Z') {
 			ch = ch + shift;
-			if (ch > 'Z')
-			{
+			if (ch > 'Z') {
 				ch = ch - 'Z' + 'A' - 1;
 			}
 			str_out[i] = ch;
@@ -54,8 +48,7 @@ void decrypt(char str[], char str_out[], int shift) {
  * reçoit les informations de radar et du système de frein
  * envoie un ordre au système de frein et les informations de danger au véhicule alentour
  */
-void CSC_control(char danger_info[20], char frein_info[20],
-		char msg_danger_in[20], SysFrein sf, CSC csc) {
+void CSC_control(char *danger_info, char *msg_danger_in) {
 	if (strcmp(danger_info, "danger") || strcmp(msg_danger_in, "danger")) {
 		sf.order = FREINAGE_URGENT;
 	} else if (strcmp(danger_info, "obstacle")) {
@@ -69,7 +62,7 @@ void CSC_control(char danger_info[20], char frein_info[20],
  *  reçoit message venant d'autre véhicules et
  *  envoie les messages de danger aux autres véhicules
  */
-void CU(CSC csc, MSG msg_danger_out, MSG msg_danger_in) {
+void CU(MSG msg_danger_out, MSG msg_danger_in) {
 	msg_danger_out.shift = 5;
 	if (msg_danger_in.msg != NULL) {
 		time(&msg_danger_in.receive); // indique l'heure de la réception du message par CSC
@@ -79,4 +72,13 @@ void CU(CSC csc, MSG msg_danger_out, MSG msg_danger_in) {
 		time(&msg_danger_out.send); // indique l'heure de l'envoie du message par CSC
 		encrypt(csc.msg_detect_in, msg_danger_out.msg);
 	}
+}
+
+enum Action frein(char *danger_info, char *msg_danger_in) {
+	CSC_control(dangerinfo, msg_danger_in, sf);
+	return sf.order;
+}
+
+int msg_size(char *msg_info) {
+	return sizeof(msg_info) / sizeof(msg_info[0]);
 }
